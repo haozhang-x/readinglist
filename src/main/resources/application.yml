@@ -1,0 +1,29 @@
+spring:
+  main:
+    banner-mode: console
+  thymeleaf:
+    cache: false
+  profiles:
+    active: development
+server:
+  port: 8443
+amazon:
+      associateId: habuma-20
+
+---
+spring:
+  profiles: development
+logging:
+  level:
+    root: info
+
+
+---
+spring:
+  profiles: production
+logging:
+  path: /tmp/
+  file: BookWorm.log
+  level:
+    root: info
+

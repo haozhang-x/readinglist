@@ -1,0 +1,36 @@
+package cn.mycloudx.readinglist.config;
+
+import cn.mycloudx.readinglist.repository.ReaderRepository;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+
+/**
+ * @author zhanghao
+ * @date 2018/05/26
+ */
+
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    private ReaderRepository readerRepository;
+
+    public SecurityConfig(ReaderRepository readerRepository) {
+        this.readerRepository = readerRepository;
+    }
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.authorizeRequests().antMatchers("/").access("hasRole('READER')")
+                .antMatchers("/**").permitAll()
+                .and().formLogin().loginPage("/login").failureUrl("/login?error=true");
+    }
+
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(username -> readerRepository.getOne(username));
+    }
+}
